@@ -18,7 +18,7 @@ from django.utils.translation import ugettext as _
 from django import forms
 from django.core.urlresolvers import reverse, get_urlconf, get_resolver
 from django.core.paginator import Paginator, InvalidPage, EmptyPage
-from django.utils.encoding import smart_text
+from django.utils.encoding import smart_str as smart_text
 from django.contrib import messages
 from django.views.decorators.csrf import csrf_exempt
 from django.core.files.storage import DefaultStorage, default_storage, FileSystemStorage
