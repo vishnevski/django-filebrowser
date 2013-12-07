@@ -251,7 +251,7 @@ var qq = qq || {};
 qq.FileUploaderBasic = function(o){
     this._options = {
         // set to true to see the server response
-        debug: false,
+        debug: true,
         action: '/server/upload',
         params: {},
         button: null,
@@ -359,6 +359,7 @@ qq.FileUploaderBasic.prototype = {
     _onProgress: function(id, fileName, loaded, total){        
     },
     _onComplete: function(id, fileName, result){
+//        console.log("361 _onComplete: function(id, fileName, result){");
         this._filesInProgress--;                 
         if (result.error){
             this._options.showMessage(result.error);
@@ -608,6 +609,7 @@ qq.extend(qq.FileUploader.prototype, {
         qq.setText(size, text);         
     },
     _onComplete: function(id, fileName, result){
+//        console.log('612 _onComplete: function(id, fileName, result){');
         qq.FileUploaderBasic.prototype._onComplete.apply(this, arguments);
 
         // mark completed
@@ -616,7 +618,18 @@ qq.extend(qq.FileUploader.prototype, {
         qq.remove(this._find(item, 'spinner'));
         
         if (result.success){
-            qq.addClass(item, this._classes.success);    
+            qq.addClass(item, this._classes.success);
+            var notes = null;
+            for (var i = 0; i < item.childNodes.length; i++) {
+                if (item.childNodes[i].className == "progress-bar") {
+                  notes = item.childNodes[i].childNodes[0];
+                  break;
+                }
+            }
+//            console.log(notes);
+            notes.style.width = '100%';
+//            console.log('qq.addClass(item, this._classes.success); ');
+//            console.log(qq.hasClass(item, this._classes.success));
         } else {
             qq.addClass(item, this._classes.fail);
         }         
@@ -882,6 +895,11 @@ qq.UploadHandlerAbstract.prototype = {
      */
     upload: function(id, params){
         var len = this._queue.push(id);
+//        console.log('upload: function(id, params){');
+//        var obj = params
+//        for(var propt in obj){
+//            console.log(propt + ': ' + obj[propt]);
+//        }
 
         var copy = {};        
         qq.extend(copy, params);
@@ -997,13 +1015,23 @@ qq.extend(qq.UploadHandlerForm.prototype, {
         
         if (!input){
             throw new Error('file with passed id was not added, or already uploaded or cancelled');
-        }                
+        }
+
 
         var fileName = this.getName(id);
-                
+        params['qqfile'] = fileName;
+
         var iframe = this._createIframe(id);
+
         var form = this._createForm(iframe, params);
+
         form.appendChild(input);
+        
+//        console.log('_upload: function(id, params){             ');
+//        var obj = params
+//        for(var propt in obj){
+//            console.log(propt + ': ' + obj[propt]);
+//        }
 
         var self = this;
         this._attachLoadEvent(iframe, function(){                                 
@@ -1150,7 +1178,7 @@ qq.extend(qq.UploadHandlerXhr.prototype, {
                 
         return this._files.push(file) - 1;        
     },
-    getName: function(id){        
+    getName: function(id){
         var file = this._files[id];
         // fix missing name in Safari 4
         return file.fileName != null ? file.fileName : file.name;       
