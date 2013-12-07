@@ -1036,15 +1036,15 @@ qq.extend(qq.UploadHandlerForm.prototype, {
             }
 
             // fixing Opera 10.53
-            if (iframe.contentDocument &&
-                iframe.contentDocument.body &&
-                iframe.contentDocument.body.innerHTML == "false"){
-                // In Opera event is fired second time
-                // when body.innerHTML changed from false
-                // to server response approx. after 1 sec
-                // when we upload file with iframe
-                return;
-            }
+//            if (iframe.contentDocument &&
+//                iframe.contentDocument.body &&
+//                iframe.contentDocument.body.innerHTML == "false"){
+//                // In Opera event is fired second time
+//                // when body.innerHTML changed from false
+//                // to server response approx. after 1 sec
+//                // when we upload file with iframe
+//                return;
+//            }
 
             callback();
         });
@@ -1170,6 +1170,7 @@ qq.extend(qq.UploadHandlerXhr.prototype, {
      * @param {Object} params name-value string pairs
      */    
     _upload: function(id, params){
+        this.log("_upload");
         var file = this._files[id],
             name = this.getName(id),
             size = this.getSize(id);
@@ -1195,6 +1196,7 @@ qq.extend(qq.UploadHandlerXhr.prototype, {
         // build query string
         params = params || {};
         params['qqfile'] = name;
+        console.log(params);
         var queryString = qq.obj2url(params, this._options.action);
 
         xhr.open("POST", queryString, true);
